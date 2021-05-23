@@ -1,6 +1,14 @@
 # go2uk
 go2uk: UK's traffic light system in your command line. For tracking current corona restrictions when travelling to United Kingdom.
 
+## Setup
+
+Get the required dependencies by typing:
+
+```bash
+➤ pip install -r requirements.txt
+```
+
 ## Usage
 
 Type either the country you want information on, a color (red, amber, green), or nothing (shows the full list):
