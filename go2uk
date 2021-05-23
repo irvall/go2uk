@@ -32,7 +32,7 @@ def show_colour(*colours):
         text_colour = "yellow" if colour == "amber" else colour
         print(
             f'{colored(colour.capitalize(), text_colour)} ({len(cs)} countries):', end=delimit)
-        print(delimit.join(cmap[colour]))
+        print(delimit.join(cs))
         print()
 
 
@@ -44,7 +44,7 @@ if len(sys.argv) > 1:
     elif arg in cmap:
         colour = cmap[arg]
         print(
-            f'{sys.argv[1].capitalize()}: {colored(colour, "yellow" if colour == "amber" else colour)}')
+            f'{arg.capitalize()}: {colored(colour, "yellow" if colour == "amber" else colour)}')
     else:
         print(f'Couldn\'t find country {colored(arg.capitalize(), "blue")}')
 else:
