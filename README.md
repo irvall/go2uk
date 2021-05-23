@@ -6,12 +6,12 @@ go2uk: UK's traffic light system in your command line. For tracking current coro
 Type either the country you want information on, a color (red, amber, green), or nothing (shows the full list):
 
 ```bash
->> go2uk denmark
+➤ go2uk denmark
 Denmark: amber
 ```
 or color:
 ```bash
->> go2uk green
+➤ go2uk green
 Green (12 countries):
 * Australia
 * Brunei
