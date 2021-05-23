@@ -5,13 +5,13 @@ go2uk: UK's traffic light system in your command line. For tracking current coro
 
 Type either the country you want information on, or a color (red, amber, green):
 
-```python3
-➤ go2uk denmark
+```bash
+>> go2uk denmark
 Denmark: amber
 ```
 or color:
-```python3
-➤ go2uk green
+```bash
+>> go2uk green
 Australia
 Brunei
 Falkland Islands
