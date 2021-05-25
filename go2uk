@@ -39,17 +39,19 @@ def show_colour(*colours):
 
 
 def fetch_or_read():
-    with open('go2uk.db', 'r') as db:
+    with open('go2uk.db', 'a+') as db:
+        db.seek(0)
         lines = db.readlines()
         now = datetime.datetime.now()
         data = db.read()
         recent = None if len(lines) == 0 else datetime.datetime.strptime(
             lines[0].strip(), '%Y-%m-%d %H:%M:%S.%f')
         if not recent or now.day > recent.day or now.hour - recent.hour > 5:
+            print(f'(wrote fresh entry at {str(now)})')
             populate()
             write_entry(data, now)
         else:
-            print('Retrieved data from', str(recent))
+            print(f'(retrieved data from {str(recent)})')
             for line in lines[1:4]:
                 parts = line.split(':')
                 col = parts[0]
@@ -61,7 +63,8 @@ def fetch_or_read():
 
 
 def write_entry(data, timestamp):
-    with open('go2uk.db', 'w') as db:
+    with open('go2uk.db', 'a+') as db:
+        db.seek(0)
         entry = f'{str(timestamp)}'
         for key in cmap:
             if key in colours:
