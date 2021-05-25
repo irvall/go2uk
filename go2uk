@@ -3,13 +3,16 @@ import sys
 import requests
 import datetime
 import lxml.html as lh
+import os.path
 from termcolor import colored
 url = 'https://www.gov.uk/guidance/red-amber-and-green-list-rules-for-entering-england'
 cmap = {}
 colours = ['red', 'amber', 'green']
+log_file = 'go2uk.db'
 
 
 def populate():
+    print('fetching recent data from gov.uk...')
     page = requests.get(url)
     doc = lh.fromstring(page.content)
     for tables in doc.xpath('//table'):
@@ -39,19 +42,19 @@ def show_colour(*colours):
 
 
 def fetch_or_read():
-    with open('go2uk.db', 'a+') as db:
+    flag = 'r' if os.path.isfile(log_file) else 'w+'
+    with open(log_file, flag) as db:
+        data = db.read()
         db.seek(0)
         lines = db.readlines()
         now = datetime.datetime.now()
-        data = db.read()
         recent = None if len(lines) == 0 else datetime.datetime.strptime(
             lines[0].strip(), '%Y-%m-%d %H:%M:%S.%f')
         if not recent or now.day > recent.day or now.hour - recent.hour > 5:
-            print(f'(wrote fresh entry at {str(now)})')
             populate()
             write_entry(data, now)
         else:
-            print(f'(retrieved data from log at {str(recent)})')
+            print(f'(retrieved data from {str(recent)})')
             for line in lines[1:4]:
                 parts = line.split(':')
                 col = parts[0].strip()
@@ -64,13 +67,13 @@ def fetch_or_read():
 
 
 def write_entry(data, timestamp):
-    with open('go2uk.db', 'a+') as db:
-        db.seek(0)
+    with open(log_file, 'w+') as db:
         entry = f'{str(timestamp)}'
         for key in cmap:
             if key in colours:
                 entry += f'\n{key}:{"/".join(cmap[key])}'
-        db.write(entry + data)
+        db.write(entry + '\n' + data)
+    print(f'(wrote fresh entry at {str(timestamp)})')
 
 
 fetch_or_read()
