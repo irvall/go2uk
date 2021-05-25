@@ -54,7 +54,7 @@ def fetch_or_read():
             populate()
             write_entry(data, now)
         else:
-            print(f'(retrieved data from {str(recent)})')
+            print(f'(retrieved data from ./{log_file} at {str(recent)})')
             for line in lines[1:4]:
                 parts = line.split(':')
                 col = parts[0].strip()
@@ -73,7 +73,7 @@ def write_entry(data, timestamp):
             if key in colours:
                 entry += f'\n{key}:{"/".join(cmap[key])}'
         db.write(entry + '\n' + data)
-    print(f'(wrote fresh entry at {str(timestamp)})')
+    print(f'(wrote new entry to ./{log_file} at {str(timestamp)})')
 
 
 fetch_or_read()
