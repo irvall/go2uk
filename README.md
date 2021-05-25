@@ -1,5 +1,6 @@
 # go2uk
 UK's traffic light system in your command line. For tracking current corona restrictions when travelling to United Kingdom.
+Creates a local DB file that by default only rewrites itself after a day or six hours of recent fetch.
 
 ## Setup
 
@@ -15,11 +16,13 @@ Type either the country you want information on, a color (red, amber, green), or
 
 ```bash
 ➤ go2uk denmark
+(retrieved data from log at 2021-05-25 11:21:47.033104)
 Denmark: amber
 ```
 or color:
 ```bash
 ➤ go2uk green
+(retrieved data from log at 2021-05-25 11:21:47.033104)
 Green (12 countries):
 * Australia
 * Brunei
@@ -37,6 +40,7 @@ Green (12 countries):
 or no arguments:
 ```bash
 ➤ go2uk
+(retrieved data from log at 2021-05-25 11:21:47.033104)
 Red (43 countries):
 * Angola
 * Argentina
