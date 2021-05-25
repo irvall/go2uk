@@ -51,15 +51,16 @@ def fetch_or_read():
             populate()
             write_entry(data, now)
         else:
-            print(f'(retrieved data from {str(recent)})')
+            print(f'(retrieved data from log at {str(recent)})')
             for line in lines[1:4]:
                 parts = line.split(':')
-                col = parts[0]
+                col = parts[0].strip()
                 cs = parts[1].split('/')
+                cmap[col] = []
                 for country in cs:
-                    cmap[col.lower()] = country
-                    country_key = country.split('(')[0].strip()
-                    cmap[country_key.lower()] = col
+                    cmap[col].append(country)
+                    country_key = country.split('(')[0].strip().lower()
+                    cmap[country_key] = col
 
 
 def write_entry(data, timestamp):
