@@ -16,13 +16,13 @@ Type either the country you want information on, a color (red, amber, green), or
 
 ```bash
 ➤ go2uk denmark
-(retrieved data from log at 2021-05-25 11:21:47.033104)
+(retrieved data from ./go2uk.db at 2021-05-25 11:58:17.225024)
 Denmark: amber
 ```
 or color:
 ```bash
 ➤ go2uk green
-(retrieved data from log at 2021-05-25 11:21:47.033104)
+(retrieved data from ./go2uk.db at 2021-05-25 11:58:17.225024)
 Green (12 countries):
 * Australia
 * Brunei
@@ -40,7 +40,7 @@ Green (12 countries):
 or no arguments:
 ```bash
 ➤ go2uk
-(retrieved data from log at 2021-05-25 11:21:47.033104)
+(retrieved data from ./go2uk.db at 2021-05-25 11:58:17.225024)
 Red (43 countries):
 * Angola
 * Argentina
