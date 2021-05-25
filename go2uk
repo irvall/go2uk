@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 import sys
 import requests
+import datetime
 import lxml.html as lh
 from termcolor import colored
 url = 'https://www.gov.uk/guidance/red-amber-and-green-list-rules-for-entering-england'
 cmap = {}
+colours = ['red', 'amber', 'green']
 
 
 def populate():
@@ -36,10 +38,41 @@ def show_colour(*colours):
         print()
 
 
-populate()
+def fetch_or_read():
+    with open('go2uk.db', 'r') as db:
+        lines = db.readlines()
+        now = datetime.datetime.now()
+        data = db.read()
+        recent = None if len(lines) == 0 else datetime.datetime.strptime(
+            lines[0].strip(), '%Y-%m-%d %H:%M:%S.%f')
+        if not recent or now.day > recent.day or now.hour - recent.hour > 5:
+            populate()
+            write_entry(data, now)
+        else:
+            print('Retrieved data from', str(recent))
+            for line in lines[1:4]:
+                parts = line.split(':')
+                col = parts[0]
+                cs = parts[1].split('/')
+                for country in cs:
+                    cmap[col.lower()] = country
+                    country_key = country.split('(')[0].strip()
+                    cmap[country_key.lower()] = col
+
+
+def write_entry(data, timestamp):
+    with open('go2uk.db', 'w') as db:
+        entry = f'{str(timestamp)}'
+        for key in cmap:
+            if key in colours:
+                entry += f'\n{key}:{"/".join(cmap[key])}'
+        db.write(entry + data)
+
+
+fetch_or_read()
 if len(sys.argv) > 1:
     arg = sys.argv[1].strip().lower()
-    if arg in ['red', 'amber', 'green']:
+    if arg in colours:
         show_colour(arg)
     elif arg in cmap:
         colour = cmap[arg]
@@ -48,4 +81,4 @@ if len(sys.argv) > 1:
     else:
         print(f'Couldn\'t find country {colored(arg.capitalize(), "blue")}')
 else:
-    show_colour('red', 'amber', 'green')
+    show_colour(*colours)
