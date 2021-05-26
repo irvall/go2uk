@@ -28,6 +28,7 @@ def populate():
                     key = c.strip().split()[0].lower()
                     cmap[key] = colour
                     cmap[colour].append(c.strip())
+    write_entry()
 
 
 def show_colour(*colours):
@@ -52,9 +53,7 @@ def fetch_or_read():
             lines[0].strip(), '%Y-%m-%d %H:%M:%S.%f')
         if not recent or now.day > recent.day or now.hour - recent.hour > 5:
             populate()
-            write_entry(data, now)
         else:
-            print(f'(retrieved data from ./{log_file} at {str(recent)})')
             for line in lines[1:4]:
                 parts = line.split(':')
                 col = parts[0].strip()
@@ -64,9 +63,15 @@ def fetch_or_read():
                     cmap[col].append(country)
                     country_key = country.split('(')[0].strip().lower()
                     cmap[country_key] = col
+            print(f'(retrieved data from ./{log_file} at {str(recent)})')
 
 
-def write_entry(data, timestamp):
+def write_entry():
+    timestamp = datetime.datetime.now()
+    flag = 'r' if os.path.isfile(log_file) else 'w+'
+    data = ''
+    with open(log_file, flag) as db:
+        data = db.read()
     with open(log_file, 'w+') as db:
         entry = f'{str(timestamp)}'
         for key in cmap:
@@ -76,7 +81,17 @@ def write_entry(data, timestamp):
     print(f'(wrote new entry to ./{log_file} at {str(timestamp)})')
 
 
-fetch_or_read()
+def remove_arg(arg):
+    i = sys.argv.index(f'--{arg}')
+    del sys.argv[i]
+
+
+if '--fetch' in sys.argv:
+    remove_arg('fetch')
+    populate()
+else:
+    fetch_or_read()
+
 if len(sys.argv) > 1:
     arg = sys.argv[1].strip().lower()
     if arg in colours:
