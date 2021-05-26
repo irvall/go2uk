@@ -3,12 +3,13 @@ import sys
 import requests
 import datetime
 import lxml.html as lh
-import os.path
+from os.path import isfile, expanduser
 from termcolor import colored
 url = 'https://www.gov.uk/guidance/red-amber-and-green-list-rules-for-entering-england'
 cmap = {}
 colours = ['red', 'amber', 'green']
-log_file = 'go2uk.db'
+home = expanduser('~')
+log_file = home + '/.go2uk.db'
 
 
 def populate():
@@ -43,7 +44,7 @@ def show_colour(*colours):
 
 
 def fetch_or_read():
-    flag = 'r' if os.path.isfile(log_file) else 'w+'
+    flag = 'r' if isfile(log_file) else 'w+'
     with open(log_file, flag) as db:
         data = db.read()
         db.seek(0)
@@ -68,7 +69,7 @@ def fetch_or_read():
 
 def write_entry():
     timestamp = datetime.datetime.now()
-    flag = 'r' if os.path.isfile(log_file) else 'w+'
+    flag = 'r' if isfile(log_file) else 'w+'
     data = ''
     with open(log_file, flag) as db:
         data = db.read()
