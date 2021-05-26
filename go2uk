@@ -9,7 +9,16 @@ url = 'https://www.gov.uk/guidance/red-amber-and-green-list-rules-for-entering-e
 cmap = {}
 colours = ['red', 'amber', 'green']
 home = expanduser('~')
-log_file = home + '/.go2uk.db'
+log_file = f'{home}/.go2uk.db'
+
+
+def flag():
+    return 'r' if isfile(log_file) else 'w+'
+
+
+def log():
+    with open(log_file, flag()) as db:
+        return db.read()
 
 
 def populate():
@@ -44,35 +53,29 @@ def show_colour(*colours):
 
 
 def fetch_or_read():
-    flag = 'r' if isfile(log_file) else 'w+'
-    with open(log_file, flag) as db:
-        data = db.read()
-        db.seek(0)
-        lines = db.readlines()
-        now = datetime.datetime.now()
-        recent = None if len(lines) == 0 else datetime.datetime.strptime(
-            lines[0].strip(), '%Y-%m-%d %H:%M:%S.%f')
-        if not recent or now.day > recent.day or now.hour - recent.hour > 5:
-            populate()
-        else:
-            for line in lines[1:4]:
-                parts = line.split(':')
-                col = parts[0].strip()
-                cs = parts[1].split('/')
-                cmap[col] = []
-                for country in cs:
-                    cmap[col].append(country)
-                    country_key = country.split('(')[0].strip().lower()
-                    cmap[country_key] = col
-            print(f'(retrieved data from ./{log_file} at {str(recent)})')
+    existing_data = log()
+    lines = existing_data.split('\n')
+    current = datetime.datetime.now()
+    recent = None if not existing_data else datetime.datetime.strptime(
+        lines[0].strip(), '%Y-%m-%d %H:%M:%S.%f')
+    if not recent or current.day > recent.day or current.hour - recent.hour > 5:
+        populate()
+    else:
+        for line in lines[1:4]:
+            parts = line.split(':')
+            col = parts[0].strip()
+            cs = parts[1].split('/')
+            cmap[col] = []
+            for country in cs:
+                cmap[col].append(country)
+                country_key = country.split('(')[0].strip().lower()
+                cmap[country_key] = col
+        print(f'(retrieved data from ./{log_file} at {str(recent)})')
 
 
 def write_entry():
     timestamp = datetime.datetime.now()
-    flag = 'r' if isfile(log_file) else 'w+'
-    data = ''
-    with open(log_file, flag) as db:
-        data = db.read()
+    data = log()
     with open(log_file, 'w+') as db:
         entry = f'{str(timestamp)}'
         for key in cmap:
